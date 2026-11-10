@@ -837,27 +837,34 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     slowRate: { label: '集中の強さ', choices: [[0.6, '弱い（0.6倍速）'], [0.4, 'ふつう（0.4倍速）'], [0.25, '強い（0.25倍速）']] },
     slowMode: { label: '集中の出し方', choices: [['key', 'ボタン／スペースキー'], ['auto', '危ないとき自動で']] },
     spCd: { label: '必殺技の間隔', choices: [[20, '20秒に1回'], [30, '30秒に1回'], [45, '45秒に1回']] },
+    ansTime: { label: '回答時間（予告の長さ）', choices: [['auto', '学習内容に合わせる'], [1, '×1'], [1.4, '×1.4'], [1.8, '×1.8'], [2.4, '×2.4'], [3, '×3']] },
   };
   H.GAME_LEVELS = {
-    beginner: { label: '入門', points: 3, tempo: 'slow', power: 1.35, atk: 0.25, hp: 0.4, weakSec: 10, bigRate: 'low', ko: 'off', curse: 12, slowSec: 20, slowRate: 0.25, slowMode: 'auto', spCd: 30 },
-    easy: { label: '簡単', points: 4, tempo: 'relaxed', power: 1.15, atk: 0.5, hp: 0.6, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.25, slowMode: 'auto', spCd: 30 },
-    normal: { label: '普通', points: 5, tempo: 'normal', power: 1, atk: 1, hp: 1, weakSec: 6, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30 },
-    hard: { label: '難しい', points: 6, tempo: 'fast', power: 0.85, atk: 1.4, hp: 1.3, weakSec: 4.5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30 },
-    extreme: { label: '激難', points: 8, tempo: 'blitz', power: 0.7, atk: 1.8, hp: 1.6, weakSec: 3, bigRate: 'max', ko: 'all', curse: 30, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30 },
+    beginner: { label: '入門', points: 3, tempo: 'slow', power: 1.35, atk: 0.25, hp: 0.4, weakSec: 10, bigRate: 'low', ko: 'off', curse: 12, slowSec: 20, slowRate: 0.25, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
+    easy: { label: '簡単', points: 4, tempo: 'relaxed', power: 1.15, atk: 0.5, hp: 0.6, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.25, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
+    normal: { label: '普通', points: 5, tempo: 'normal', power: 1, atk: 1, hp: 1, weakSec: 6, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    hard: { label: '難しい', points: 6, tempo: 'fast', power: 0.85, atk: 1.4, hp: 1.3, weakSec: 4.5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    extreme: { label: '激難', points: 8, tempo: 'blitz', power: 0.7, atk: 1.8, hp: 1.6, weakSec: 3, bigRate: 'max', ko: 'all', curse: 30, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
   };
   H.levelLabel = id => (H.GAME_LEVELS[id] ? H.GAME_LEVELS[id].label : 'カスタム');
 
   // ---------- 学習内容（問題の難しさ） ----------
   H.STUDY_LEVELS = {
-    easy: { label: '簡単', desc: '中1の基礎：1けたの正負の数・1回で解ける方程式' },
-    normal: { label: '普通', desc: '中1の標準：正負の数・四則・式の値・一次方程式' },
-    hard: { label: '難しい', desc: '中1の発展：3つの数の計算・累乗・かっこのある方程式' },
-    oni: { label: '鬼', desc: '中1の超発展：4つの数・累乗の混合・小数の方程式・2つの文字の式の値' },
-    elementary: { label: '小学生', desc: '小学生の暗算（たし算・九九・おつり・面積など）', extra: true },
-    blend: { label: '小学生＋中1', desc: '小学生の暗算6割・中1の基礎4割', extra: true },
-    none: { label: '問題なし', desc: '問題を出さず、ボタンを押すだけ（操作の練習）', extra: true },
+    // time＝回答時間の倍率（予告の長さ・攻撃の間隔・弱点の時間を、問題の重さに合わせて伸ばす）
+    easy: { label: '簡単', time: 1, desc: '中1の基礎：1けたの正負の数・1回で解ける方程式' },
+    normal: { label: '普通', time: 1.4, desc: '中1の標準：正負の数・四則・式の値・一次方程式' },
+    hard: { label: '難しい', time: 1.8, desc: '中1の発展：3つの数の計算・累乗・かっこのある方程式' },
+    oni: { label: '鬼', time: 2.4, desc: '中1の超発展：4つの数・累乗の混合・小数の方程式・2つの文字の式の値' },
+    elementary: { label: '小学生', time: 1, desc: '小学生の暗算（たし算・九九・おつり・面積など）', extra: true },
+    blend: { label: '小学生＋中1', time: 1.15, desc: '小学生の暗算6割・中1の基礎4割', extra: true },
+    none: { label: '問題なし', time: 0.8, desc: '問題を出さず、ボタンを押すだけ（操作の練習）', extra: true },
   };
   H.studyLabel = id => (H.STUDY_LEVELS[id] ? H.STUDY_LEVELS[id].label : id);
+  // 回答時間の倍率：「学習内容に合わせる」なら学習内容の time。呪い中は「鬼」の長さ以上にする
+  H.answerTime = (o, cursed) => {
+    const base = o.ansTime === 'auto' || o.ansTime == null ? (H.STUDY_LEVELS[o.study] || H.STUDY_LEVELS.normal).time : Number(o.ansTime);
+    return cursed ? Math.max(base, H.STUDY_LEVELS.oni.time) : base;
+  };
 
   // 設定をそろえる：ゲームの難易度（level）を土台に個別の指定で上書き。学習内容（study）は別
   H.resolveOptions = function (o = {}) {
@@ -1118,6 +1125,12 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     emit(type, data = {}) { data.type = type; data.t = this.t; this.events.push(data); }
     isFront(i) { return isFrontAngle(this.angles[i]); }
     timeScale() { return this.slow ? this.opts.slowRate : 1; }
+    // 回答時間の倍率（学習内容に合わせて伸ばす。呪い中は「鬼」ぶん）
+    ansMul() { return H.answerTime(this.opts, !!this.curse); }
+    // 攻撃と攻撃の間（問題が重いほど、こちらが攻める時間も少し長く）
+    _rest(base) { return base * (1 + (this.ansMul() - 1) * 0.6); }
+    // 1撃の重さ：難しい問題ほど1問の価値が高い（戦闘の長さをそろえる）。呪い中は「鬼」ぶん
+    studyPow() { return 1 + (H.answerTime(Object.assign({}, this.opts, { ansTime: 'auto' }), !!this.curse) - 1) * 0.5; }
 
     // ---------- 問題 ----------
     _newProblem(id) {
@@ -1289,7 +1302,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       const counter = P.counter;
       const comboMul = 1 + Math.min(P.combo, 10) * 0.05;
       const down = E.downT > 0;
-      const dmg = Math.round(B.attack * comboMul * (counter ? B.counterMul : 1) * this.opts.power * pos * (weak ? B.weakMul : 1) * (down ? B.downMul : 1) * this.rng.range(0.92, 1.08));
+      const dmg = Math.round(B.attack * comboMul * (counter ? B.counterMul : 1) * this.opts.power * this.studyPow() * pos * (weak ? B.weakMul : 1) * (down ? B.downMul : 1) * this.rng.range(0.92, 1.08));
       P.counter = false;
       this._damageEnemy(dmg, { kind: 'attack', lane: a.lane, weak, counter, front, pos, posLabel, combo: P.combo, crit: weak || counter });
       if (weak && !E.dead) { this.stats.weakHits++; E.weak = null; this._down(B.downSec, 'weak'); }
@@ -1332,11 +1345,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         case 'tele': this._stepTele(dt); break;
         case 'strike': if (E.st >= 0.7) this._afterStrike(); break;
         case 'recover':
-          if (E.st >= E.recoverDur) { E.state = 'idle'; E.st = 0; E.rest = this.tempo.rest * (E.rage ? 0.8 : 1) / this.def.speed; }
+          if (E.st >= E.recoverDur) { E.state = 'idle'; E.st = 0; E.rest = this._rest(this.tempo.rest) * (E.rage ? 0.8 : 1) / this.def.speed; }
           break;
         case 'down':
           E.downT -= dt;
-          if (E.downT <= 0) { E.downT = 0; E.state = 'idle'; E.st = 0; E.rest = Math.max(1.2, this.tempo.rest * 0.6); this.emit('downEnd', {}); }
+          if (E.downT <= 0) { E.downT = 0; E.state = 'idle'; E.st = 0; E.rest = Math.max(1.2, this._rest(this.tempo.rest) * 0.6); this.emit('downEnd', {}); }
           break;
       }
     }
@@ -1384,7 +1397,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       const E = this.enemy, P = this.player, a = E.atk;
       a.stage++;
       const s = a.stages[a.stage];
-      const k = this.tempo.k * (E.rage ? 0.85 : 1) / this.def.speed;
+      const k = this.tempo.k * this.ansMul() * (E.rage ? 0.85 : 1) / this.def.speed;
       a.tele = s.tele * k; a.t = 0; a.shape = s.shape; a.fx = s.fx; a.track = !!s.track; a.lockAt = a.tele * 0.72; a.locked = false;
       a.ctx.safe = null;
       a.targets = H.shapeTargets(s.shape, P.lane, this.n, this.rng, a.ctx);
@@ -1392,7 +1405,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       if (s.shape === 'waveL' || s.shape === 'waveR') {
         const order = [...Array(this.n).keys()];
         if (s.shape === 'waveR') order.reverse();
-        const step = (s.step || 0.8) * Math.max(0.7, k);
+        const step = (s.step || 0.8) * Math.max(0.7, this.tempo.k * Math.sqrt(this.ansMul()) / this.def.speed);
         a.hits = order.map((lane, i) => ({ lanes: [lane], at: a.tele + i * step, done: false }));
       } else a.hits = [{ lanes: a.targets.slice(), at: a.tele, done: false }];
       a.end = a.hits[a.hits.length - 1].at;
@@ -1478,7 +1491,8 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       const lanes = [...Array(this.n).keys()].filter(i => i !== P.lane);
       const near = lanes.filter(i => Math.abs(i - P.lane) <= 3);
       const lane = this.rng.pick(near.length ? near : lanes);
-      E.weak = { lane, t: this.opts.weakSec, max: this.opts.weakSec };
+      const ws = this.opts.weakSec * this.ansMul();
+      E.weak = { lane, t: ws, max: ws };
       this.emit('weak', { lane, t: E.weak.t });
     }
 
@@ -1506,7 +1520,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       if (P.armed) P.armed = false;
       P.queue.length = 0; P.act = null; P.moveTarget = null;
       if (this.curse) this._endCurse('special');
-      const total = H.BALANCE.special * this.opts.power * (1 + Math.min(P.combo, 10) * 0.05);
+      const total = H.BALANCE.special * this.opts.power * this.studyPow() * (1 + Math.min(P.combo, 10) * 0.05);
       this.special = { t: 0, total, hits: [0.95, 1.06, 1.17, 1.28, 1.39, 1.5], share: 0.07, finalAt: 1.85, endAt: 2.75, done: 0, finalDone: false, dealt: 0 };
       this.phase = 'special'; this.slow = false; this.slowManual = false;
       this.emit('specialStart', {});
@@ -3259,7 +3273,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         <div class="ei-meta">体力 ×${d.hpMul} ／ 攻撃 ×${d.atkMul} ／ 速さ ×${d.speed} ／ 背景：${esc(H.BACKGROUNDS[d.bg].name)}</div>
         <div class="ei-best">${best ? `この組み合わせの最高：<b>${best.rank}</b> ・ 最速 <b>${H.fmtTime(best.time)}</b>（${best.wins}勝）` : 'この難易度・学習内容では、まだ勝っていません'}</div>`;
       $('#level-desc').textContent = this._levelDesc(o);
-      $('#study-desc').textContent = H.STUDY_LEVELS[o.study].desc + (d.curse && o.study !== 'oni' && o.study !== 'none' ? ' ／ この敵は呪いで一時的に「鬼」にしてくる' : '');
+      $('#study-desc').textContent = H.STUDY_LEVELS[o.study].desc + ` ／ 回答時間 ×${H.answerTime(o)}${o.ansTime === 'auto' ? '（学習内容に合わせる）' : ''} ／ 1撃の重さ ×${(1 + (H.answerTime(Object.assign({}, o, { ansTime: 'auto' })) - 1) * 0.5).toFixed(1)}` + (d.curse && o.study !== 'oni' && o.study !== 'none' ? ' ／ この敵は呪いで一時的に「鬼」にしてくる（そのあいだ回答時間も「鬼」ぶん）' : '');
     }
     _levelDesc(o) {
       const f = k => { const c = H.OPTIONS[k].choices.find(x => String(x[0]) === String(o[k])); return c ? c[1] : ''; };
