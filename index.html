@@ -166,6 +166,31 @@ summary { cursor: pointer; font-weight: 700; font-size: 14px; }
 .toast.gold { border-color: var(--gold); color: #ffe8a0; box-shadow: 0 0 16px rgba(255, 200, 60, 0.35); }
 .toast.good { border-color: #6fefff; color: #c8f8ff; }
 .toast.bad { border-color: #ff5a5a; color: #ffd0d0; }
+#read-chip { position: absolute; left: 12px; top: 84px; width: min(310px, 30vw); padding: 6px 12px 8px; border-radius: 12px; pointer-events: none;
+  background: linear-gradient(180deg, rgba(40, 30, 6, 0.9), rgba(24, 18, 4, 0.86)); border: 1px solid rgba(255, 214, 90, 0.75); box-shadow: 0 0 18px rgba(255, 200, 60, 0.3); }
+#read-chip .r-top { font-size: 15px; font-weight: 800; }
+#read-chip .r-top b { color: #ffe27a; }
+#read-chip .r-how { font-size: 12px; color: #fff2c8; margin-top: 2px; }
+#read-chip .r-why { font-size: 10px; color: #c8b890; margin-top: 2px; }
+.tag.t-read { background: #ffd65a; color: #2a1400; }
+.ei-dex { margin-top: 2px; font-size: 12px; color: #ffe2a8; }
+.dex-grid { display: grid; grid-template-columns: repeat(7, minmax(52px, 1fr)); gap: 6px; overflow-x: auto; }
+.dex-pick { position: relative; padding: 6px 4px !important; display: grid; justify-items: center; gap: 2px; border-radius: 12px !important; }
+.dex-pick img { width: 100%; aspect-ratio: 1; object-fit: contain; }
+.dex-pick.unmet img, .dex-detail img.unmet { filter: brightness(0) drop-shadow(0 0 6px rgba(160, 180, 255, 0.5)); }
+.dex-pick .nm { font-size: 11px; text-align: center; line-height: 1.2; }
+.dex-pick .pc { font-size: 10px; color: var(--gold); }
+.dex-pick.on { border-color: var(--c) !important; box-shadow: 0 0 0 2px var(--c), 0 0 14px var(--c); }
+.dex-detail { display: grid; grid-template-columns: 120px 1fr; gap: 12px; align-items: center; margin-top: 12px; padding: 10px; border-radius: 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--line); font-size: 13px; line-height: 1.6; }
+.dex-detail img { width: 120px; aspect-ratio: 1; object-fit: contain; }
+.dex-habits, .dex-moves, .dex-new { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.dex-habits li, .dex-moves li, .dex-new li { padding: 6px 10px; border-radius: 8px; background: rgba(255, 255, 255, 0.04); font-size: 13px; }
+.dex-habits li.ok, .dex-new li { border-left: 3px solid #ffd65a; }
+.dex-habits li.no, .dex-moves li.no { color: var(--dim); }
+.dex-habits .tag { margin-right: 8px; }
+.dex-moves li { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 8px; }
+.dex-moves small { flex-basis: 100%; color: var(--dim); font-size: 11px; }
+.dex-moves .cnt { margin-left: auto; font-size: 11px; color: var(--dim); }
 .toast.curse { border-color: #c070ff; color: #f0d8ff; box-shadow: 0 0 16px rgba(170, 70, 255, 0.45); }
 .toast.out { opacity: 0; transform: translateY(-10px); }
 @keyframes tin { from { opacity: 0; transform: translateY(8px) scale(0.95); } }
@@ -268,6 +293,10 @@ table.tp td { padding: 3px 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);
   #combo { top: 128px; right: 8px; }
   #toast { left: 6px; right: 6px; width: auto; top: 150px; justify-items: center; }
   #curse-pill { top: 112px; font-size: 11px; }
+  #read-chip { left: 6px; right: 84px; width: auto; top: 62px; padding: 3px 10px 5px; }
+  #read-chip .r-why { display: none; }
+  .dex-detail { grid-template-columns: 80px 1fr; }
+  .dex-detail img { width: 80px; }
   #curse-pill small { display: none; }
   .tag { font-size: 10px; padding: 0 4px; }
   .toast { font-size: 12px; padding: 5px 12px; }
@@ -305,6 +334,7 @@ table.tp td { padding: 3px 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);
     </div>
     <div class="menu">
       <button data-go="setup" class="primary">狩りに出る</button>
+      <button data-go="dex">図鑑</button>
       <button data-go="records">記録</button>
       <button data-go="howto">遊び方</button>
       <button data-go="settings">設定</button>
@@ -349,6 +379,7 @@ table.tp td { padding: 3px 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);
     </div>
     <div id="banner" class="hidden"></div>
     <div id="curse-pill" class="hidden"></div>
+    <div id="read-chip" class="hidden"></div>
     <div id="combo"></div>
     <div id="toast"></div>
     <div class="hud-bottom">
@@ -382,6 +413,13 @@ table.tp td { padding: 3px 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);
     </div>
   </section>
 
+  <section id="dex" class="hidden">
+    <div class="panel">
+      <div class="p-top"><button data-go="title" class="back">◀ もどる</button><h2>図鑑</h2></div>
+      <div id="dex-box"></div>
+    </div>
+  </section>
+
   <section id="howto" class="hidden">
     <div class="panel">
       <div class="p-top"><button data-go="title" class="back">◀ もどる</button><h2>遊び方</h2></div>
@@ -407,6 +445,7 @@ table.tp td { padding: 3px 6px; border-top: 1px solid rgba(255, 255, 255, 0.06);
         <p><b>金色の星</b>＝弱点。その地点から斬ると大ダメージで敵がダウンし、予告も止まります。</p>
         <p><b>集中</b>（スペースキー）＝世界がゆっくりになり、考える時間をかせげます。ゲージは正解と時間で戻ります。</p>
         <p>まちがえると1秒動けず、正解が緑で示されます。まちがえた問題は結果画面に残ります。</p>
+        <p><b>敵の癖と図鑑</b>：ボスには決まった流れ（癖）が3つずつあります（例：「追い爪・三連のあとは必ず全体攻撃」「回復すると必ず突進」）。同じ癖を2回見ると図鑑に記録され、次からは技が来る前に<b>「読み：次は〇〇」</b>が出ます。読んだ技を一度も当たらずにしのぐと<b>「読み切り」</b>で必殺技の待ち時間が4秒縮みます。回復や正面からの攻撃がきっかけの癖は、わざと誘うこともできます。</p>
         <p><b>ゲームの難易度</b>（入門〜激難）と<b>学習内容</b>（簡単〜鬼）は別々に選べます。難易度は、与える・受けるダメージ、敵の体力、攻撃の速さと間隔、移動ポイントの数、弱点が見える時間、大技の多さ、一撃必殺の有無が変わります。</p>
         <p class="desc">パソコン：スペース＝集中、Esc＝一時停止、1〜8＝移動先の地点。「問題なし（ボタンだけ）」ではキーでも操作できます（A・D・J・K・H・F）。</p>
       </div>
@@ -831,7 +870,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
   H.OPTIONS = {
     tempo: { label: '敵の速さ（予告の長さと攻撃の間隔）', choices: Object.entries(H.TEMPO).map(([k, v]) => [k, v.label]) },
     power: { label: '与えるダメージ', choices: [[1.5, '1.5倍'], [1.3, '1.3倍'], [1.15, '1.15倍'], [1, '1倍'], [0.95, '0.95倍'], [0.9, '0.9倍'], [0.8, '0.8倍']] },
-    atk: { label: '受けるダメージ', choices: [[0.25, '0.25倍'], [0.35, '0.35倍'], [0.6, '0.6倍'], [1, '1倍'], [1.3, '1.3倍'], [1.6, '1.6倍'], [2, '2倍']] },
+    atk: { label: '受けるダメージ', choices: [[0.25, '0.25倍'], [0.35, '0.35倍'], [0.6, '0.6倍'], [0.9, '0.9倍'], [1, '1倍'], [1.1, '1.1倍'], [1.35, '1.35倍'], [1.6, '1.6倍'], [2, '2倍']] },
     hp: { label: '敵の体力', choices: [[0.4, '0.4倍'], [0.6, '0.6倍'], [0.8, '0.8倍'], [1, '1倍'], [1.1, '1.1倍'], [1.2, '1.2倍'], [1.4, '1.4倍'], [1.6, '1.6倍']] },
     weakSec: { label: '弱点が見えている時間', choices: [[12, '12秒'], [9, '9秒'], [8, '8秒'], [6.5, '6.5秒'], [5, '5秒'], [4, '4秒'], [3, '3秒']] },
     bigRate: { label: '大技の多さ', choices: [['low', '少ない'], ['normal', 'ふつう'], ['high', '多い'], ['max', 'とても多い']] },
@@ -845,9 +884,9 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
   };
   H.GAME_LEVELS = {
     beginner: { label: '入門', points: 3, tempo: 's1', power: 1.3, atk: 0.35, hp: 0.6, weakSec: 9, bigRate: 'low', ko: 'off', curse: 12, slowSec: 12, slowRate: 0.3, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
-    easy: { label: '簡単', points: 4, tempo: 's2', power: 1.15, atk: 0.6, hp: 0.8, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.4, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
-    normal: { label: '普通', points: 5, tempo: 's3', power: 1, atk: 1, hp: 1, weakSec: 6.5, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30, ansTime: 'auto' },
-    hard: { label: '難しい', points: 6, tempo: 's4', power: 0.95, atk: 1.3, hp: 1.1, weakSec: 5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 6, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    easy: { label: '簡単', points: 4, tempo: 's2', power: 1.15, atk: 0.9, hp: 0.8, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.4, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
+    normal: { label: '普通', points: 5, tempo: 's3', power: 1, atk: 1.1, hp: 1, weakSec: 6.5, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    hard: { label: '難しい', points: 6, tempo: 's4', power: 0.95, atk: 1.35, hp: 1.1, weakSec: 5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 6, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
     extreme: { label: '激難', points: 8, tempo: 's5', power: 0.9, atk: 1.6, hp: 1.2, weakSec: 4, bigRate: 'max', ko: 'all', curse: 30, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
   };
 
@@ -889,6 +928,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     out.pointsAuto = !(n >= 3 && n <= 8);
     out.points = out.pointsAuto ? (H.GAME_LEVELS[out.level] || base).points : n;
     if (o.seed) out.seed = Number(o.seed) || 1;
+    out.known = Array.isArray(o.known) ? o.known.slice() : [];   // 図鑑に載っている癖（読みのヒントが出る）
     return out;
   };
 
@@ -961,6 +1001,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: 'どこからでも攻撃が通る。正面はダメージ1.15倍。炎の行進は左から順番に来る。',
       moves: { claw: '紅蓮の爪', sweep: '灼熱の薙ぎ払い', charge: '獅子の突進', multi: '降りそそぐ炎塊', nova: '業火の咆哮', double: '双炎の薙ぎ払い', chase: '追い爪・三連', waveL: '炎の行進（左から）', bigWide: '大技・紅蓮流星群', bigChain: '大技・獄炎三連', bigNova: '大技・紅蓮大咆哮', ko: '一撃必殺・獅子王の焔', ultimate: '奥義・紅蓮獄' },
       pool: ['claw', 'twin', 'sweep', 'charge', 'multi', 'chase', 'waveL', 'nova'], big: ['bigWide', 'bigChain', 'bigNova'],
+      habits: [
+        { id: 'g3c1_open', type: 'open', move: 'claw', text: '最初は必ず『紅蓮の爪』（1か所）' },
+        { id: 'g3c1_chase', type: 'after', after: 'chase', move: 'nova', text: '『追い爪・三連』のあとは、必ず『業火の咆哮』（全体）' },
+        { id: 'g3c1_heal', type: 'heal', move: 'charge', text: '回復すると、次は必ず『獅子の突進』（正面側）' },
+      ],
     },
     boss_g3c3: {
       name: '2次方程式の主', nick: '日輪獅子', el: '日輪', img: 'boss_g3c3', bg: 'observatory', stars: 2,
@@ -968,6 +1013,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '光の柱は1つおき。1歩ずれれば当たらない。日輪の行進は右から順番に。',
       moves: { claw: '陽光の爪', pillar: '日輪の柱', multi: '灼光の雨', sweep: '日輪薙ぎ', nova: '黄金の咆哮', double: '双輪の薙ぎ払い', waveR: '日輪の行進（右から）', bigWave: '大技・天輪往復', bigNova: '大技・黄金大爆発', ko: '一撃必殺・天照', ultimate: '奥義・天照' },
       pool: ['claw', 'pillar', 'multi', 'sweep', 'double', 'waveR', 'lock', 'nova'], big: ['bigWave', 'bigNova', 'bigLock'],
+      habits: [
+        { id: 'g3c3_pillar', type: 'after', after: 'pillar', move: 'waveR', text: '『日輪の柱』のあとは、必ず『日輪の行進（右から）』' },
+        { id: 'g3c3_rage', type: 'rage', move: 'bigWave', text: '怒った直後は、必ず『大技・天輪往復』' },
+        { id: 'g3c3_front', type: 'front2', move: 'lock', text: '正面から2回続けて斬ると、次は必ずロックオン（『日輪の照準』）' },
+      ],
     },
     boss_g3c5: {
       name: '相似な図形の主', nick: '翠晶の三角獣', el: '翠晶', img: 'boss_g3c5', bg: 'forest', stars: 2,
@@ -975,6 +1025,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '浮いている。晶石の雨はばらばらに落ちる。翠光線は今いる地点をロックオンしてくる。',
       moves: { claw: '三角刃', multi: '晶石の雨', lock: '翠光線', spikes: '相似の分身', nova: '拡大写像', double: '縮図の双撃', bigWide: '大技・晶石流星群', bigLock: '大技・翠極光線', ko: '一撃必殺・無限相似', ultimate: '奥義・無限相似' },
       pool: ['claw', 'multi', 'lock', 'spikes', 'twin', 'waveL', 'double', 'nova'], big: ['bigWide', 'bigLock', 'bigChain'],
+      habits: [
+        { id: 'g3c5_open', type: 'open', move: 'lock', text: '最初は必ず『翠光線』（ロックオン）' },
+        { id: 'g3c5_multi', type: 'after', after: 'multi', move: 'spikes', text: '『晶石の雨』のあとは、必ず『相似の分身』（外側）' },
+        { id: 'g3c5_weak', type: 'weak', move: 'nova', text: '弱点を突かれてダウンしたあとは、必ず『拡大写像』（全体）' },
+      ],
     },
     boss_c5: {
       name: '平面図形の主', nick: '翠盾の獅子騎士', el: '翠盾', img: 'boss_c5', bg: 'abyss', stars: 3,
@@ -982,6 +1037,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '正面は盾で硬い（0.6倍）。横から斬ると1.15倍。強い敵：一撃必殺を使う。',
       moves: { charge: '盾の突撃', spikes: '結界の杭', sweep: '剣の舞', claw: '獅子の剣', nova: '審判の光輪', double: '剣舞・二連', chase: '追い剣・三連', bigChain: '大技・聖剣三連', bigWave: '大技・結界の行進', ko: '一撃必殺・聖域崩し', ultimate: '奥義・聖域崩し' },
       pool: ['charge', 'spikes', 'sweep', 'claw', 'chase', 'double', 'waveR', 'nova'], big: ['bigChain', 'bigWave', 'bigNova'],
+      habits: [
+        { id: 'c5_front', type: 'front2', move: 'charge', text: '正面から2回続けて斬ると、次は必ず『盾の突撃』（正面側）' },
+        { id: 'c5_double', type: 'after', after: 'double', move: 'spikes', text: '『剣舞・二連』のあとは、必ず『結界の杭』（外側）' },
+        { id: 'c5_rage', type: 'rage', move: 'bigChain', text: '怒った直後は、必ず『大技・聖剣三連』' },
+      ],
     },
     boss_g2c4: {
       name: '平行と合同の主', nick: '双刃の蒼騎士', el: '蒼雷', img: 'boss_g2c4', bg: 'starhall', stars: 3,
@@ -989,6 +1049,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '横は硬い（0.8倍）。正面から斬ると1.25倍。雷槍は今いる地点をロックオン。強い敵：一撃必殺を使う。',
       moves: { twin: '双刃の斬撃', lock: '雷槍', sweep: '蒼雷の薙ぎ払い', pillar: '平行雷柱', nova: '雷鳴天墜', double: '合同の双撃', bigLock: '大技・極雷槍', bigWide: '大技・蒼雷の雨', ko: '一撃必殺・蒼雷の審判', ultimate: '奥義・蒼雷の審判' },
       pool: ['twin', 'lock', 'sweep', 'pillar', 'chase', 'double', 'waveL', 'nova'], big: ['bigLock', 'bigWide', 'bigChain'],
+      habits: [
+        { id: 'g2c4_heal', type: 'heal', move: 'lock', text: '回復すると、次は必ず『雷槍』（ロックオン）' },
+        { id: 'g2c4_pillar', type: 'after', after: 'pillar', move: 'double', text: '『平行雷柱』のあとは、必ず『合同の双撃』（左右の半分を続けて）' },
+        { id: 'g2c4_special', type: 'special', move: 'bigLock', text: '必殺技を受けたあとは、必ず『大技・極雷槍』（ロックオン）' },
+      ],
     },
     boss_g2c3: {
       name: '一次関数の主', nick: '交差する雷星', el: '雷星', img: 'boss_g2c3', bg: 'observatory', stars: 4,
@@ -996,6 +1061,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '強い。予告が少し短く、ロックオンと順番の攻撃が多い。強い敵：一撃必殺を使う。',
       moves: { lock: '直線の雷', spikes: '交差斬', multi: '傾きの雨', sweep: '一次の奔流', twin: '切片の双撃', nova: '座標爆砕', double: '変化の割合', waveL: '直線の行進（左から）', waveR: '直線の行進（右から）', bigLock: '大技・y=ax+b', bigWave: '大技・往復する直線', ko: '一撃必殺・交点消滅', ultimate: '奥義・座標崩壊' },
       pool: ['lock', 'spikes', 'multi', 'sweep', 'twin', 'waveL', 'waveR', 'nova'], big: ['bigLock', 'bigWave', 'bigWide', 'bigChain'],
+      habits: [
+        { id: 'g2c3_wave', type: 'after', after: 'waveL', move: 'waveR', text: '『直線の行進（左から）』のあとは、必ず『直線の行進（右から）』' },
+        { id: 'g2c3_rage', type: 'rage', move: 'ko', alt: 'bigWide', text: '怒った直後は、必ず『一撃必殺・交点消滅』（一撃必殺を使わない難易度では、広範囲の大技）' },
+        { id: 'g2c3_front', type: 'front2', move: 'lock', text: '正面から2回続けて斬ると、次は必ず『直線の雷』（ロックオン）' },
+      ],
     },
     boss_maou: {
       name: '数学の魔王（中1）', nick: '鬼算の魔王', el: '魔算', img: 'boss_maou', bg: 'starhall', stars: 5,
@@ -1003,6 +1073,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       tip: '最後のボス。「鬼算の呪い」を受けると、しばらく問題がすべて「鬼」になる。回避か、安全地帯（緑）へ逃げれば防げる。必殺技を当てると呪いが解ける。',
       moves: { claw: '魔王の爪', multi: '数式の雨', lock: '魔眼の光線', chase: '魔王の追撃・三連', waveL: '数式の行進（左から）', waveR: '数式の行進（右から）', nova: '魔王の咆哮', bigChain: '大技・魔王三連', bigWide: '大技・数式流星群', ko: '一撃必殺・解なし', ultimate: '奥義・無限の鬼算' },
       pool: ['claw', 'multi', 'lock', 'chase', 'waveL', 'waveR', 'double', 'nova'], big: ['bigChain', 'bigWide', 'bigLock', 'curse'],
+      habits: [
+        { id: 'maou_open', type: 'open', move: 'multi', text: '最初は必ず『数式の雨』（ばらばら）' },
+        { id: 'maou_heal', type: 'heal', move: 'curse', alt: 'lock', text: '回復すると、次は必ず『鬼算の呪い』（呪いを使わない設定では『魔眼の光線』）' },
+        { id: 'maou_curse', type: 'after', after: 'curse', move: 'waveL', text: '『鬼算の呪い』のあとは、必ず『数式の行進（左から）』' },
+      ],
     },
   };
   H.DEFAULT_ENEMY = 'boss_g3c1';
@@ -1029,6 +1104,12 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
   H.SPECIAL_NAME = 'クロノ・ブレイク';
   H.SPECIAL_SUB = '時空連斬';
   H.HERO = { name: 'たびびとの少年', img: 'hero10' };
+  // 癖が図鑑に載るまでに見る回数
+  H.HABIT_LEARN = 2;
+  // 癖のきっかけの説明（図鑑の見出し）
+  H.HABIT_TYPES = { open: '最初の一手', after: '技のつながり', rage: '怒ったとき', heal: '回復を見ると', front2: '正面から斬られると', weak: 'ダウンのあと', special: '必殺技のあと' };
+  // 技のよけ方（図鑑と結果画面）
+  H.HOW_TO = { single: '赤い円の外へ動く', multi: '赤い円の外へ動く', all: '回避（構え）でしかよけられない', lock: '照準が止まって LOCK ON になってから動くか、回避', combo: 'よけたあと、次の段も動くか回避', wave: '当たり終わった地点へ動くか、回避', wide: '緑の安全地帯へ動くか、回避', ko: '緑の安全地帯へ動くか、回避（当たると力尽きる）', curse: '緑の安全地帯へ動くか、回避。受けたら必殺技で解ける' };
 })(typeof window !== 'undefined' ? window : globalThis);
 
 // ---- js/sim.js
@@ -1108,6 +1189,9 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       this.noProblem = o.study === 'none';
       this.level = this.noProblem ? 1 : H.LEVELS[o.study];
       this.curse = null;                          // 鬼の呪い（問題がすべて「鬼」になる）
+      this.habits = this.def.habits || [];        // 敵の癖（決まった流れ）
+      this.known = new Set(o.known || []);        // 図鑑に載っている癖
+      this.frontStreak = 0;
       const B = H.BALANCE;
       this.player = {
         hp: B.playerHp, maxHp: B.playerHp, lane: Math.floor(this.n / 2), potions: B.potions,
@@ -1119,15 +1203,47 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       this.t = 0; this.rt = 0; this.phase = 'fight'; this.special = null; this.endT = 0; this.endWin = false; this.over = false; this.result = null; this.clearTime = 0;
       this.focusMax = o.slowSec; this.focus = this.focusMax; this.slow = false; this.slowManual = false; this.slowUsed = 0;
       this.lastT = 0;
-      this.stats = { correct: 0, miss: 0, timeSum: 0, topics: {}, maxCombo: 0, hitsTaken: 0, dodges: 0, sidesteps: 0, damage: 0, specials: 0, weakHits: 0, missed: [], actions: {}, cursed: 0, oniCorrect: 0, ko: 0 };
+      this.stats = { correct: 0, miss: 0, timeSum: 0, topics: {}, maxCombo: 0, hitsTaken: 0, dodges: 0, sidesteps: 0, damage: 0, specials: 0, weakHits: 0, missed: [], actions: {}, cursed: 0, oniCorrect: 0, ko: 0, reads: 0, habits: {} };
       this.events = [];
       this.cards = {};
       for (const c of H.CARDS) this.cards[c.id] = { id: c.id, prob: null, shownAt: 0, miss: null };
       for (const c of H.CARDS) this._newProblem(c.id);
+      this._habit('open');
       this.emit('roar', {});
     }
 
     emit(type, data = {}) { data.type = type; data.t = this.t; this.events.push(data); }
+
+    // ---------- 癖（決まった流れ） ----------
+    // きっかけ（type）に合う癖があれば、次の技を決めておく。怒りは何より優先
+    _habit(type, after) {
+      const E = this.enemy;
+      const h = this.habits.find(x => x.type === type && (type !== 'after' || x.after === after));
+      if (!h || E.dead) return;
+      if (E.nextHabit && E.nextHabit.type === 'rage' && type !== 'rage') return;
+      E.nextHabit = h;
+      this.emit('habitArmed', { id: h.id, known: this.known.has(h.id) });
+    }
+    // 癖の技が、この設定で使えるか（使えなければ代わりの技）
+    _habitMove(h) {
+      const o = this.opts, d = this.def;
+      const ok = id => {
+        if (id === 'ko') return o.ko === 'all' || (o.ko === 'strong' && d.stars >= 3);
+        if (id === 'curse') return this._curseUsable();
+        return !!H.ATTACKS[id];
+      };
+      if (ok(h.move)) return h.move;
+      return h.alt && ok(h.alt) ? h.alt : null;
+    }
+    // 図鑑で知っている癖なら、次に来る技を返す（読みのヒント）
+    predict() {
+      const E = this.enemy, h = E.nextHabit;
+      if (!h || !this.known.has(h.id) || E.dead) return null;
+      const move = this._habitMove(h);
+      if (!move) return null;
+      return { habit: h.id, move, name: H.moveName(this.def, move), cat: H.ATTACKS[move].cat, text: h.text };
+    }
+    learnHabit(id) { this.known.add(id); }
     isFront(i) { return isFrontAngle(this.angles[i]); }
     timeScale() { return this.slow ? this.opts.slowRate : 1; }
     // 回答時間の倍率（学習内容に合わせて伸ばす。呪い中は「鬼」ぶん）
@@ -1249,6 +1365,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
           P.hp = Math.min(P.maxHp, P.hp + B.heal);
           P.act = { type: 'heal', t: 0, dur: 0.6 };
           this.emit('heal', { amount: Math.round(P.hp - before), left: P.potions });
+          this._habit('heal');
           break;
         }
         case 'special': this._startSpecial(); break;
@@ -1310,7 +1427,9 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       const dmg = Math.round(B.attack * comboMul * (counter ? B.counterMul : 1) * this.opts.power * this.studyPow() * pos * (weak ? B.weakMul : 1) * (down ? B.downMul : 1) * this.rng.range(0.92, 1.08));
       P.counter = false;
       this._damageEnemy(dmg, { kind: 'attack', lane: a.lane, weak, counter, front, pos, posLabel, combo: P.combo, crit: weak || counter });
-      if (weak && !E.dead) { this.stats.weakHits++; E.weak = null; this._down(B.downSec, 'weak'); }
+      this.frontStreak = front ? this.frontStreak + 1 : 0;
+      if (this.frontStreak === 2) this._habit('front2');
+      if (weak && !E.dead) { this.stats.weakHits++; E.weak = null; this._down(B.downSec, 'weak'); this._habit('weak'); }
     }
 
     _damageEnemy(dmg, info) {
@@ -1318,7 +1437,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       if (E.dead) return;
       E.hp -= dmg; this.stats.damage += dmg;
       this.emit('enemyHit', Object.assign({}, info, { dmg, hp: Math.max(0, E.hp) }));
-      if (!E.rage && E.hp > 0 && E.hp <= E.maxHp * 0.5) { E.rage = true; this.emit('rage', {}); }
+      if (!E.rage && E.hp > 0 && E.hp <= E.maxHp * 0.5) { E.rage = true; this.emit('rage', {}); this._habit('rage'); }
       if (E.hp <= 0) this._enemyDead();
     }
 
@@ -1364,7 +1483,13 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       const E = this.enemy, d = this.def, o = this.opts;
       const rate = H.BIG_RATE[o.bigRate] || H.BIG_RATE.normal;
       const koOn = o.ko === 'all' || (o.ko === 'strong' && d.stars >= 3);
-      let id = force || null;
+      let id = force || null, habit = null;
+      if (!id && E.nextHabit) {
+        const m = this._habitMove(E.nextHabit);
+        if (m) { id = m; habit = E.nextHabit; }
+        E.nextHabit = null;
+      }
+      this.frontStreak = 0;
       // 鬼の呪い（魔王）：はじめは3回目以降、そのあとは5回ごとくらい
       if (!id && this._curseUsable() && E.sinceCurse >= (E.cursed ? 5 : 3) && this.rng.chance(0.5)) id = 'curse';
       // 一撃必殺：体力が75%を切ってから、間をあけて
@@ -1390,7 +1515,8 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       E.sinceAll = A.cat === 'all' ? 0 : E.sinceAll + 1;
       E.sinceCurse = A.curse ? 0 : E.sinceCurse + 1;
       if (A.curse) E.cursed++;
-      E.atk = { id, name: H.moveName(d, id), def: A, cat: A.cat, big: !!A.big, ko: !!A.ko, curse: !!A.curse, level: A.level, dmg: A.dmg, stages: A.stages, stage: -1, ctx: {}, ultimate: !!A.ultimate };
+      E.atk = { id, name: H.moveName(d, id), def: A, cat: A.cat, big: !!A.big, ko: !!A.ko, curse: !!A.curse, level: A.level, dmg: A.dmg, stages: A.stages, stage: -1, ctx: {}, ultimate: !!A.ultimate, habit: habit ? habit.id : null, read: !!(habit && this.known.has(habit.id)), hurtAny: false };
+      if (habit) { this.stats.habits[habit.id] = (this.stats.habits[habit.id] || 0) + 1; this.emit('habit', { id: habit.id, move: id, known: this.known.has(habit.id), text: habit.text }); }
       this._nextStage();
     }
     // テスト用：技を決めて出させる
@@ -1457,7 +1583,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       this.emit('strike', { id: a.id, name: a.name, fx: a.fx, targets: h.lanes.slice(), all: a.hits.length === 1, result, lane: P.lane, stage: a.stage, ultimate: a.ultimate, big: a.big, ko: a.ko, curse: a.curse, safe: a.safe });
       if (result === 'dodged') { this.emit('dodge', { lane: P.lane, curse: a.curse, ko: a.ko }); return; }
       if (result !== 'hit') return;
-      a.gotHit = true;
+      a.gotHit = true; a.hurtAny = true;
       if (a.curse) this._startCurse();
       const lethal = a.ko && (this.opts.ko !== 'off');
       const dmg = lethal ? Math.max(P.hp, 999) : Math.round(a.dmg * this.opts.atk * this.def.atkMul * (E.rage ? 1.15 : 1) * (a.ultimate ? 1.1 : 1) * this.rng.range(0.93, 1.07));
@@ -1486,6 +1612,9 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       if (a.stage < a.stages.length - 1) { this._nextStage(); return; }
       const big = a.big || a.shape === 'all';
       E.atk = null; E.state = 'recover'; E.st = 0; E.recoverDur = big ? 2.0 : 1.4;
+      // 読み切り：図鑑で知っていた癖の技を、一度も当たらずにしのいだ
+      if (a.read && !a.hurtAny && !P.dead) { this.stats.reads++; P.spCd = Math.max(0, P.spCd - 4); this.emit('read', { habit: a.habit, name: a.name }); if (P.spCd <= 0) this.emit('specialReady', {}); }
+      this._habit('after', a.id);
       if (P.armed) { P.armed = false; this.emit('armedLost', {}); }
       const chance = big ? 1 : a.level >= 2 ? 0.55 : 0.3;
       if (!E.weak && this.rng.chance(chance)) this._spawnWeak();
@@ -1551,6 +1680,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         this.special = null; this.phase = 'fight';
         E.state = 'down'; E.downT = 2.2; E.st = 0;
         this.emit('specialEnd', {});
+        this._habit('special');
       }
     }
 
@@ -1597,7 +1727,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       this.result = {
         win, rank, time, rate, correct: st.correct, miss: st.miss, avg: st.correct ? st.timeSum / st.correct : 0,
         maxCombo: st.maxCombo, hitsTaken: st.hitsTaken, dodges: st.dodges, sidesteps: st.sidesteps, damage: Math.round(st.damage),
-        specials: st.specials, weakHits: st.weakHits, missed: st.missed.slice(), topics, slowUsed: this.slowUsed, cursed: st.cursed, oniCorrect: st.oniCorrect, deathBy: this.deathBy || '',
+        specials: st.specials, weakHits: st.weakHits, missed: st.missed.slice(), topics, slowUsed: this.slowUsed, cursed: st.cursed, oniCorrect: st.oniCorrect, deathBy: this.deathBy || '', reads: st.reads, habits: Object.assign({}, st.habits),
         enemy: this.opts.enemy, enemyName: this.def.name, nick: this.def.nick, level: this.opts.level, levelLabel: H.levelLabel(this.opts.level), study: this.opts.study, studyLabel: H.studyLabel(this.opts.study),
         points: this.n, opts: Object.assign({}, this.opts), noProblem: this.noProblem, monsterLeft: Math.round(Math.max(0, E.hp) / E.maxHp * 100),
       };
@@ -2697,6 +2827,16 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
           break;
         }
         case 'sidestep': fx.text(hv.x, hv.y - hv.h * 1.05, 'かわした', { size: 18, life: 0.9, color: '#dff8ff', vy: -50 }); break;
+        case 'read': {
+          fx.ring(hv.x, hv.y - hv.h * 0.5, '#ffd65a', hv.h * 0.2, hv.h * 1.1, 0.6, { w: 8, core: true });
+          fx.embers(hv.x, hv.y - hv.h * 0.4, '#ffe27a', 16, { w: hv.h * 0.5, h: hv.h * 0.6, up: 160, size: 6 });
+          fx.text(hv.x, hv.y - hv.h * 1.12, '読み切り！', { size: 34, life: 1.4, grad: ['#ffffff', '#ffc83a'], vy: -40, pop: 2 });
+          fx.text(hv.x, hv.y - hv.h * 1.12 + 32, '必殺技の待ち −4秒', { size: 16, life: 1.4, color: '#ffe27a', vy: -40 });
+          break;
+        }
+        case 'habit':
+          if (e.known) fx.text(ecx, ecy - L.eh * 0.48, '読みどおり', { size: 24, life: 1.2, grad: ['#ffffff', '#ffd65a'], vy: -30 });
+          break;
         case 'curse': {
           this.flash(0.5, '#a030ff'); this.shake(14);
           fx.ring(hv.x, hv.y - hv.h * 0.5, '#b04aff', hv.h * 0.2, hv.h * 1.4, 0.7, { w: 10, core: true });
@@ -2820,6 +2960,13 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         fx.text(ecx, ecy - L.eh * 0.15, String(e.total || e.dmg), { size: Math.min(96, this.W * 0.11), life: 1.9, grad: ['#ffffff', '#ffb21c'], isNumber: true, pop: 2.6, vy: -20 });
         fx.text(ecx, ecy - L.eh * 0.15 - Math.min(70, this.W * 0.08), 'TOTAL', { size: 26, life: 1.9, color: '#ffe27a', vy: -20 });
       }
+    }
+
+    // 癖を図鑑に記録したとき
+    discovered() {
+      const fx = this.fx, L = this.L;
+      fx.text(this.W / 2, this.stage.y + this.stage.h * 0.22, '図鑑に記録！', { size: Math.min(44, this.W * 0.06), life: 1.8, grad: ['#ffffff', '#ffc83a'], vy: -14, pop: 2.2 });
+      fx.ring(L.efx, L.efy - L.eh * 0.5, '#ffd65a', L.ew * 0.1, L.ew * 0.9, 0.8, { w: 8, core: true });
     }
 
     // 攻撃の見た目を、当たる直前に出し始めるもの（落ちてくる・溜めて撃つ）
@@ -3190,10 +3337,25 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     },
   };
 
+  // 図鑑（この端末のブラウザに保存）：敵ごとに 戦った回数・勝った回数・見た技・見た癖
+  H.Dex = {
+    load() { return H.store.get('hunter2d.dex', {}); },
+    entry(d, id) { return d[id] || (d[id] = { fights: 0, wins: 0, moves: {}, habits: {} }); },
+    note(id, fn) { const d = this.load(); fn(this.entry(d, id)); H.store.set('hunter2d.dex', d); },
+    get(id) { return this.entry(this.load(), id); },
+    known(id) { const e = this.get(id); return Object.entries(e.habits).filter(([, n]) => n >= H.HABIT_LEARN).map(([k]) => k); },
+  };
+  // その敵が使いうる技（図鑑の一覧）
+  H.enemyMoves = d => {
+    const ids = [...d.pool, ...d.big, ...(d.curse ? ['curse'] : []), 'ultimate', 'ko'];
+    for (const h of d.habits || []) { ids.push(h.move); if (h.alt) ids.push(h.alt); }
+    return [...new Set(ids)].filter(id => H.ATTACKS[id]);
+  };
+
   class UI {
     constructor(app) {
       this.app = app;
-      this.settings = Object.assign({ sfx: true, vol: 0.8, bgm: true, quality: 'high', shake: true, numbers: true }, H.store.get('hunter2d.settings', {}));
+      this.settings = Object.assign({ sfx: true, vol: 0.8, bgm: true, quality: 'high', shake: true, numbers: true, hints: true }, H.store.get('hunter2d.settings', {}));
       this.pick = Object.assign({ enemy: H.DEFAULT_ENEMY, level: 'normal', study: 'normal', points: 'auto' }, H.store.get('hunter2d.pick2', {}));
       if (!H.GAME_LEVELS[this.pick.level] && this.pick.level !== 'custom') this.pick.level = 'normal';
       if (!H.STUDY_LEVELS[this.pick.study]) this.pick.study = 'normal';
@@ -3276,7 +3438,8 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       $('#enemy-info').innerHTML = `<div class="ei-nick" style="--c:${d.color}">${esc(d.nick)}</div><div class="ei-name">${esc(d.name)}（数学ラボ3）</div>
         <div class="ei-tip">${esc(d.tip)}</div>
         <div class="ei-meta">体力 ×${d.hpMul} ／ 攻撃 ×${d.atkMul} ／ 速さ ×${d.speed} ／ 背景：${esc(H.BACKGROUNDS[d.bg].name)}</div>
-        <div class="ei-best">${best ? `この組み合わせの最高：<b>${best.rank}</b> ・ 最速 <b>${H.fmtTime(best.time)}</b>（${best.wins}勝）` : 'この難易度・学習内容では、まだ勝っていません'}</div>`;
+        <div class="ei-best">${best ? `この組み合わせの最高：<b>${best.rank}</b> ・ 最速 <b>${H.fmtTime(best.time)}</b>（${best.wins}勝）` : 'この難易度・学習内容では、まだ勝っていません'}</div>
+        <div class="ei-dex">${(() => { const e = H.Dex.get(this.pick.enemy), mv = H.enemyMoves(d); return `図鑑：癖 <b>${H.Dex.known(this.pick.enemy).length}/${d.habits.length}</b> ・ 見た技 <b>${mv.filter(m => e.moves[m]).length}/${mv.length}</b>`; })()}</div>`;
       $('#level-desc').textContent = this._levelDesc(o);
       $('#study-desc').textContent = H.STUDY_LEVELS[o.study].desc + ` ／ 回答時間 ×${H.answerTime(o)}${o.ansTime === 'auto' ? '（学習内容に合わせる）' : ''} ／ 1撃の重さ ×${(1 + (H.answerTime(Object.assign({}, o, { ansTime: 'auto' })) - 1) * 0.5).toFixed(1)}` + (d.curse && o.study !== 'oni' && o.study !== 'none' ? ' ／ この敵は呪いで一時的に「鬼」にしてくる（そのあいだ回答時間も「鬼」ぶん）' : '');
     }
@@ -3296,6 +3459,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         row('エフェクトの量', `<select data-s="quality"><option value="high">ふつう（派手）</option><option value="low">少なめ（軽い）</option></select>`),
         row('画面のゆれ', `<select data-s="shake"><option value="1">あり</option><option value="0">なし</option></select>`),
         row('ダメージの数字', `<select data-s="numbers"><option value="1">出す</option><option value="0">出さない</option></select>`),
+        row('読みのヒント（図鑑の癖）', `<select data-s="hints"><option value="1">出す</option><option value="0">出さない（腕だめし）</option></select>`),
       ].join('');
       for (const el of $$('[data-s]', box)) {
         const k = el.dataset.s, v = s[k];
@@ -3393,7 +3557,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       // 予告の帯
       const a = E.state === 'tele' ? E.atk : null;
       const mh = a ? b.myHit(a) : null;
-      const bannerKey = a ? `${a.id}:${a.stage}:${E.count}:${!!mh}:${P.armed}:${a.locked}:${P.lane}` : '';
+      const bannerKey = a ? `${a.id}:${a.stage}:${E.count}:${!!mh}:${P.armed}:${a.locked}:${P.lane}:${a.read}` : '';
       set('banner', bannerKey, () => {
         const el = $('#banner');
         if (!a) { el.classList.add('hidden'); return; }
@@ -3408,6 +3572,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         else what = me ? 'ねらわれている！ 動くか、回避' : 'いまの地点は安全';
         const tags = [`<i class="tag t-${a.cat}">${esc(H.CATS[a.cat] || '')}</i>`];
         if (a.big && !a.ko && !a.curse) tags.unshift('<i class="tag t-big">大技</i>');
+        if (a.read) tags.unshift('<i class="tag t-read">読みどおり</i>');
         el.className = (me && !P.armed) ? (a.ko ? 'danger ko' : a.curse ? 'danger curse' : 'danger') : P.armed && me ? 'armed' : 'safe';
         el.innerHTML = `<div class="b-name">${tags.join('')}${esc(a.name)}${a.stages.length > 1 ? `<small>${a.stage + 1}/${a.stages.length}段</small>` : ''}</div><div class="b-sub">${esc(SHAPE[a.shape] || '')}・回避の難しさ ${stars}${a.curse ? '・当たると問題が「鬼」に' : ''}</div><div class="b-what">${esc(what)}</div><div class="b-bar"><i></i></div>`;
       });
@@ -3416,6 +3581,13 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         const until = mh ? mh.at : Math.min(...a.hits.filter(h => !h.done).map(h => h.at).concat([a.end]));
         if (bar) bar.style.width = (Math.max(0, 1 - a.t / Math.max(0.01, until)) * 100).toFixed(1) + '%';
       }
+      // 読み（図鑑で知っている癖：次に来る技）
+      const pr = !a && !b.over ? b.predict() : null;
+      set('read', pr ? pr.habit + pr.move : '', () => {
+        const el = $('#read-chip');
+        el.classList.toggle('hidden', !pr);
+        if (pr) el.innerHTML = `<div class="r-top"><i class="tag t-read">読み</i>次は <b>${esc(pr.name)}</b><i class="tag t-${pr.cat}">${esc(H.CATS[pr.cat] || '')}</i></div><div class="r-how">${esc(H.HOW_TO[pr.cat] || '')}</div><div class="r-why">図鑑：${esc(pr.text)}</div>`;
+      });
       // 鬼の呪い
       set('curse', b.curse ? Math.ceil(b.curse.t) : 0, v => {
         const el = $('#curse-pill');
@@ -3460,6 +3632,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         ['最大連続', `${r.maxCombo}`], ['被弾', `${r.hitsTaken}回`], ['見切り（回避成功）', `${r.dodges}回`], ['移動でかわした', `${r.sidesteps}回`],
         ['弱点を突いた', `${r.weakHits}回`], ['必殺技', `${r.specials}回`], ['与えたダメージ', `${r.damage}`],
         ...(r.cursed ? [['鬼の呪いを受けた', `${r.cursed}回（鬼の問題に正解 ${r.oniCorrect}問）`]] : []),
+        ...(r.reads ? [['読み切り', `${r.reads}回`]] : []),
         ...(r.win ? [] : [['敵の残り体力', `${r.monsterLeft}%`]]),
       ];
       const topics = r.topics.length ? `<h3>単元ごと</h3><table class="tp"><tr><th>単元</th><th>正解</th><th>ミス</th><th>平均</th></tr>${r.topics.map(t => `<tr><td>${esc(t.name)}</td><td>${t.n}</td><td>${t.miss}</td><td>${t.n ? t.avg.toFixed(1) + '秒' : '-'}</td></tr>`).join('')}</table>` : '';
@@ -3468,8 +3641,44 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         ${r.win ? '' : r.deathBy === 'ko' ? '<p class="r-advice">一撃必殺は、緑の安全地帯へ動くか、「回避」の問題を解いて構えれば防げる。予告は長いので落ち着いて。</p>' : '<p class="r-advice">赤い円の地点から動くか、「回避」の問題を解いて構えよう。全体攻撃は回避でしかよけられない。順番の攻撃は、当たり終わった地点へ。</p>'}
         <table class="st">${rows.map(x => `<tr><th>${x[0]}</th><td>${esc(x[1])}</td></tr>`).join('')}</table>
         ${r.win ? `<p class="r-rank-note">評価 S：正答率95%以上・8問以上・被弾0・3分30秒以内 ／ A：正答率85%以上・8問以上 ／ B：討伐</p>` : ''}
+        ${(r.newHabits || []).length ? `<h3>図鑑に記録した癖</h3><ul class="dex-new">${r.newHabits.map(id => { const h = (H.ENEMIES[r.enemy].habits || []).find(x => x.id === id); return `<li>${esc(h ? h.text : id)}</li>`; }).join('')}</ul><p class="desc">次の戦いから、この癖が来る前に「読み」が出ます。よけきると「読み切り」で必殺技が早くなります。</p>` : ''}
         ${topics}${missed}`;
       this.show('result');
+    }
+    renderDex(sel) {
+      const box = $('#dex-box');
+      const urls = this.app.assets.urls.enemies;
+      const id = sel || this.dexSel || null;
+      this.dexSel = id;
+      const grid = H.ENEMY_ORDER.map(eid => {
+        const d = H.ENEMIES[eid], e = H.Dex.get(eid), met = e.fights > 0;
+        return `<button class="dex-pick ${met ? '' : 'unmet'} ${eid === id ? 'on' : ''}" data-dex="${eid}" style="--c:${d.color}"><img alt="" src="${urls[eid]}"><span class="nm">${met ? esc(d.nick) : '？？？'}</span><span class="pc">癖 ${H.Dex.known(eid).length}/${d.habits.length}</span></button>`;
+      }).join('');
+      let detail = '<p class="desc">敵を選ぶと、見つけた癖と技のよけ方が見られます。癖は' + H.HABIT_LEARN + '回見ると図鑑に記録されます。</p>';
+      if (id) {
+        const d = H.ENEMIES[id], e = H.Dex.get(id), known = new Set(H.Dex.known(id));
+        const habits = d.habits.map(h => {
+          const n = e.habits[h.id] || 0;
+          if (known.has(h.id)) return `<li class="ok"><i class="tag">${esc(H.HABIT_TYPES[h.type])}</i>${esc(h.text)}</li>`;
+          return `<li class="no"><i class="tag">${esc(H.HABIT_TYPES[h.type])}</i>？？？${n ? `（あと${H.HABIT_LEARN - n}回見ると分かる）` : ''}</li>`;
+        }).join('');
+        const moves = H.enemyMoves(d).map(m => {
+          const A = H.ATTACKS[m], seen = e.moves[m];
+          if (!seen) return `<li class="no">？？？</li>`;
+          return `<li><b>${esc(H.moveName(d, m))}</b><i class="tag t-${A.cat}">${esc(H.CATS[A.cat])}</i>${A.big && !A.ko && !A.curse ? '<i class="tag t-big">大技</i>' : ''}<span class="cnt">${seen}回</span><small>${esc(H.HOW_TO[A.cat] || '')}</small></li>`;
+        }).join('');
+        const allBest = Object.keys(H.GAME_LEVELS).flatMap(lv => Object.keys(H.STUDY_LEVELS).map(st => H.Records.best(id, lv, st))).filter(Boolean);
+        const order = { S: 0, A: 1, B: 2 };
+        const best = allBest.length ? { rank: allBest.map(x => x.rank).sort((x, y) => (order[x] ?? 9) - (order[y] ?? 9))[0], time: Math.min(...allBest.map(x => x.time)) } : null;
+        detail = `<div class="dex-detail" style="--c:${d.color}"><img alt="" src="${urls[id]}" class="${e.fights ? '' : 'unmet'}">
+          <div><div class="ei-nick">${e.fights ? esc(d.nick) : '？？？'}</div><div class="ei-name">${e.fights ? esc(d.name) + '（数学ラボ3）' : 'まだ戦っていない'}</div>
+          <div class="ei-tip">${e.fights ? esc(d.tip) : ''}</div>
+          <div class="ei-meta">戦った ${e.fights}回 ／ 勝った ${e.wins}回${best ? ` ／ 最高 <b>${best.rank}</b> ・ 最速 ${H.fmtTime(best.time)}` : ''}</div></div></div>
+          <h3>癖（${known.size}/${d.habits.length}）</h3><ul class="dex-habits">${habits}</ul>
+          <h3>技（見た ${H.enemyMoves(d).filter(m => e.moves[m]).length}/${H.enemyMoves(d).length}）</h3><ul class="dex-moves">${moves}</ul>`;
+      }
+      box.innerHTML = `<div class="dex-grid">${grid}</div>${detail}`;
+      $$('[data-dex]', box).forEach(b => b.addEventListener('click', () => { this.app.audio.play('ui'); this.renderDex(b.dataset.dex); }));
     }
     renderRecords() {
       const log = H.Records.load().slice().reverse();
@@ -3650,6 +3859,50 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       b.player.spCd = 0.01; T.advance(0.2); until(() => b.enabled('special').ok, 4); T.answer('special');
       ok('必殺技で呪いが解ける', !b.curse && !b.cards.atk.prob.oni);
       T.advance(4);
+      // 敵の癖と図鑑（この確認のあいだだけ図鑑に記録し、終わったら元に戻す）
+      {
+        const keepDex = root.localStorage.getItem('hunter2d.dex');
+        root.localStorage.removeItem('hunter2d.dex');
+        app.noRecord = false;
+        try {
+          T.start({ seed: 50, enemy: 'boss_g3c1', study: 'easy', level: 'normal' }); b = app.b;
+          until(() => b.enemy.state === 'tele', 15);
+          ok('癖：最初の一手は決まっている', b.enemy.atk.id === 'claw' && b.enemy.atk.habit === 'g3c1_open');
+          ok('図鑑：見た癖を数える', H.Dex.get('boss_g3c1').habits.g3c1_open === 1 && H.Dex.get('boss_g3c1').fights === 1);
+          const healOnce = () => {
+            until(() => b.enemy.state === 'idle' || b.enemy.state === 'recover', 20);
+            b.player.hp = 60; T.answer('heal');
+            until(() => b.enemy.state === 'tele', 20);
+            return b.enemy.atk;
+          };
+          let h1 = healOnce();
+          ok('癖：回復すると次は突進', h1.id === 'charge' && h1.habit === 'g3c1_heal' && !h1.read);
+          until(() => b.enemy.state !== 'tele', 20);
+          let h2 = healOnce();
+          ok('図鑑：同じ癖を2回見ると記録される', H.Dex.known('boss_g3c1').includes('g3c1_heal') && b.known.has('g3c1_heal'));
+          until(() => b.enemy.state !== 'tele', 20);
+          until(() => b.enemy.state === 'idle' || b.enemy.state === 'recover', 20);
+          b.player.hp = 60; T.answer('heal'); app.ui.update();
+          ok('読み：知っている癖は先に出る', !!b.predict() && b.predict().move === 'charge' && !doc.querySelector('#read-chip').classList.contains('hidden'));
+          until(() => b.enemy.state === 'tele', 20);
+          ok('読み：来た技に「読みどおり」', b.enemy.atk.read === true);
+          b.player.spCd = 20;
+          const spBefore = b.player.spCd, reads0 = b.stats.reads;
+          // 正面側の突進なので、外側（はし）へ動いてしのぐ
+          const safe = [...Array(b.n).keys()].find(l => !b.enemy.atk.hits[0].lanes.includes(l));
+          b.setMoveTarget(safe); T.answer(safe < b.player.lane ? 'left' : 'right');
+          until(() => b.enemy.state !== 'tele', 20); T.advance(1);
+          ok('読み切り：しのぐと必殺技の待ちが縮む', b.stats.reads === reads0 + 1 && b.player.spCd < spBefore - 3, { reads: b.stats.reads, sp: [spBefore, b.player.spCd] });
+          b.enemy.hp = 3; until(() => b.enabled('atk').ok, 6); T.answer('atk'); T.advance(6);
+          ok('結果：図鑑に記録した癖が出る', !!doc.querySelector('.dex-new li'));
+          app.go('dex'); app.ui.renderDex('boss_g3c1');
+          ok('図鑑の画面：記録した癖と見た技', doc.querySelectorAll('.dex-habits li.ok').length === 1 && doc.querySelector('.dex-habits li.ok').textContent.includes('回復すると') && doc.querySelectorAll('.dex-moves li:not(.no)').length >= 2 && !doc.querySelector('#dex').classList.contains('hidden'));
+          app.go('title');
+        } finally {
+          app.noRecord = true;
+          if (keepDex == null) root.localStorage.removeItem('hunter2d.dex'); else root.localStorage.setItem('hunter2d.dex', keepDex);
+        }
+      }
       // ボットで最後まで
       T.start({ seed: 21, points: 6, level: 'easy' }); b = app.b;
       T.advance(400, { bot: { think: 1.2, acc: 0.9 } });
@@ -3756,6 +4009,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         if (this.b && this.b.over) { this.endBattle(); this.renderer.setScene(this.ui.pick.enemy, null); }
         this.screen = screen;
         if (screen === 'records') this.ui.renderRecords();
+        if (screen === 'dex') this.ui.renderDex();
         this.ui.show(screen);
       }
       this.resize();
@@ -3763,7 +4017,11 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     preview(id) { this.renderer.setScene(id, null); this.resize(); }
     startBattle(opts) {
       if (qs.has('seed') && !opts.seed) opts.seed = Number(qs.get('seed'));
+      const eid = H.ENEMIES[opts.enemy] ? opts.enemy : H.DEFAULT_ENEMY;
+      if (!opts.known) opts.known = this.ui.settings.hints ? H.Dex.known(eid) : [];
       this.b = new H.Battle(opts);
+      this.newHabits = [];
+      if (!this.noRecord) H.Dex.note(this.b.opts.enemy, e => { e.fights++; });
       this.bot = qs.has('bot') ? new H.Bot(this.b, { think: Number(qs.get('bot')) || 1.3, acc: 0.9 }) : null;
       this.paused = false; this.resultShown = false;
       this.renderer.setScene(this.b.opts.enemy, this.b);
@@ -3801,14 +4059,34 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
         if (!this.noRecord) H.Records.save(b.result);
         this.audio.bgm(b.result.win ? 'victory' : 'defeat', false);
         this.screen = 'result';
+        b.result.newHabits = (this.newHabits || []).slice();
         this.ui.showResult(b.result);
       }
       return gdt;
     }
     flushEvents() {
       const b = this.b;
-      for (const e of b.events) { this.renderer.onEvent(e); this.audio.onEvent(e); this.ui.onEvent(e); }
+      for (const e of b.events) { this.renderer.onEvent(e); this.audio.onEvent(e); this.ui.onEvent(e); this.dexEvent(e); }
       b.events.length = 0;
+    }
+    // 図鑑：見た技・見た癖を数える。癖は決まった回数見ると図鑑に載り、その場から読みのヒントが出る
+    dexEvent(e) {
+      const b = this.b;
+      if (this.noRecord || !b) return;
+      const eid = b.opts.enemy;
+      if (e.type === 'tele' && e.stage === 0) H.Dex.note(eid, x => { x.moves[e.id] = (x.moves[e.id] || 0) + 1; });
+      if (e.type === 'habit') {
+        let n = 0;
+        H.Dex.note(eid, x => { n = x.habits[e.id] = (x.habits[e.id] || 0) + 1; });
+        if (n === H.HABIT_LEARN) {
+          if (this.ui.settings.hints) b.learnHabit(e.id);
+          this.newHabits.push(e.id);
+          this.ui.toast('図鑑に記録：' + e.text, 'gold');
+          this.renderer.discovered();
+          this.audio.play('ready');
+        }
+      }
+      if (e.type === 'finish' && e.win) H.Dex.note(eid, x => { x.wins++; });
     }
     loop(now) {
       const realDt = Math.min(0.05, Math.max(0, (now - (this.last || now)) / 1000));
