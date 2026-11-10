@@ -814,22 +814,26 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
   const H = root.H2D = root.H2D || {};
 
   // 敵の速さ。k＝予告の長さの倍率、rest＝攻撃と攻撃の間（秒）
+  // 2026-11-10 作り直し：kazu が「普通＋問題簡単（k1・2.1秒）で頭フル回転＝最大」「前の簡単（k1.3・3.6秒）は簡単すぎ」。
+  //   → s5（最大）＝k1・2.1秒、s1＝k1.3・3.6秒、その間を3段。vslow・vfast はカスタム専用
   H.TEMPO = {
-    slow: { label: 'とてもゆっくり', k: 1.6, rest: 6 },
-    relaxed: { label: 'ゆっくり', k: 1.3, rest: 3.6 },
-    normal: { label: 'ふつう', k: 1, rest: 2.1 },
-    fast: { label: 'はやい', k: 0.8, rest: 1.4 },
-    blitz: { label: 'とてもはやい', k: 0.66, rest: 0.9 },
+    vslow: { label: 'とてもゆっくり（小さい子向け）', k: 1.6, rest: 6 },
+    s1: { label: 'ゆっくり', k: 1.3, rest: 3.6 },
+    s2: { label: 'ややゆっくり', k: 1.22, rest: 3.2 },
+    s3: { label: 'ふつう', k: 1.15, rest: 2.8 },
+    s4: { label: 'ややはやい', k: 1.07, rest: 2.4 },
+    s5: { label: 'はやい（最大）', k: 1, rest: 2.1 },
+    vfast: { label: 'とてもはやい（腕だめし）', k: 0.85, rest: 1.6 },
   };
 
   // ---------- ゲームの難易度（学習内容とは別に選ぶ） ----------
   // 調整できる項目（準備画面の「細かく決める」に並ぶ）
   H.OPTIONS = {
     tempo: { label: '敵の速さ（予告の長さと攻撃の間隔）', choices: Object.entries(H.TEMPO).map(([k, v]) => [k, v.label]) },
-    power: { label: '与えるダメージ', choices: [[1.35, '1.35倍'], [1.15, '1.15倍'], [1, '1倍'], [0.85, '0.85倍'], [0.7, '0.7倍']] },
-    atk: { label: '受けるダメージ', choices: [[0.25, '0.25倍'], [0.5, '0.5倍'], [1, '1倍'], [1.4, '1.4倍'], [1.8, '1.8倍']] },
-    hp: { label: '敵の体力', choices: [[0.4, 'とても少ない'], [0.6, '少ない'], [1, 'ふつう'], [1.3, '多い'], [1.6, 'とても多い']] },
-    weakSec: { label: '弱点が見えている時間', choices: [[10, '10秒'], [8, '8秒'], [6, '6秒'], [4.5, '4.5秒'], [3, '3秒']] },
+    power: { label: '与えるダメージ', choices: [[1.5, '1.5倍'], [1.3, '1.3倍'], [1.15, '1.15倍'], [1, '1倍'], [0.95, '0.95倍'], [0.9, '0.9倍'], [0.8, '0.8倍']] },
+    atk: { label: '受けるダメージ', choices: [[0.25, '0.25倍'], [0.35, '0.35倍'], [0.6, '0.6倍'], [1, '1倍'], [1.3, '1.3倍'], [1.6, '1.6倍'], [2, '2倍']] },
+    hp: { label: '敵の体力', choices: [[0.4, '0.4倍'], [0.6, '0.6倍'], [0.8, '0.8倍'], [1, '1倍'], [1.1, '1.1倍'], [1.2, '1.2倍'], [1.4, '1.4倍'], [1.6, '1.6倍']] },
+    weakSec: { label: '弱点が見えている時間', choices: [[12, '12秒'], [9, '9秒'], [8, '8秒'], [6.5, '6.5秒'], [5, '5秒'], [4, '4秒'], [3, '3秒']] },
     bigRate: { label: '大技の多さ', choices: [['low', '少ない'], ['normal', 'ふつう'], ['high', '多い'], ['max', 'とても多い']] },
     ko: { label: '一撃必殺技', choices: [['off', '使わない'], ['strong', '強い敵だけ'], ['all', 'すべての敵']] },
     curse: { label: '鬼の呪いの長さ（魔王）', choices: [[12, '12秒'], [16, '16秒'], [20, '20秒'], [25, '25秒'], [30, '30秒']] },
@@ -840,12 +844,13 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     ansTime: { label: '回答時間（予告の長さ）', choices: [['auto', '学習内容に合わせる'], [1, '×1'], [1.4, '×1.4'], [1.8, '×1.8'], [2.4, '×2.4'], [3, '×3']] },
   };
   H.GAME_LEVELS = {
-    beginner: { label: '入門', points: 3, tempo: 'slow', power: 1.35, atk: 0.25, hp: 0.4, weakSec: 10, bigRate: 'low', ko: 'off', curse: 12, slowSec: 20, slowRate: 0.25, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
-    easy: { label: '簡単', points: 4, tempo: 'relaxed', power: 1.15, atk: 0.5, hp: 0.6, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.25, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
-    normal: { label: '普通', points: 5, tempo: 'normal', power: 1, atk: 1, hp: 1, weakSec: 6, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30, ansTime: 'auto' },
-    hard: { label: '難しい', points: 6, tempo: 'fast', power: 0.85, atk: 1.4, hp: 1.3, weakSec: 4.5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
-    extreme: { label: '激難', points: 8, tempo: 'blitz', power: 0.7, atk: 1.8, hp: 1.6, weakSec: 3, bigRate: 'max', ko: 'all', curse: 30, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    beginner: { label: '入門', points: 3, tempo: 's1', power: 1.3, atk: 0.35, hp: 0.6, weakSec: 9, bigRate: 'low', ko: 'off', curse: 12, slowSec: 12, slowRate: 0.3, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
+    easy: { label: '簡単', points: 4, tempo: 's2', power: 1.15, atk: 0.6, hp: 0.8, weakSec: 8, bigRate: 'low', ko: 'off', curse: 16, slowSec: 12, slowRate: 0.4, slowMode: 'auto', spCd: 30, ansTime: 'auto' },
+    normal: { label: '普通', points: 5, tempo: 's3', power: 1, atk: 1, hp: 1, weakSec: 6.5, bigRate: 'normal', ko: 'strong', curse: 20, slowSec: 6, slowRate: 0.4, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    hard: { label: '難しい', points: 6, tempo: 's4', power: 0.95, atk: 1.3, hp: 1.1, weakSec: 5, bigRate: 'high', ko: 'strong', curse: 25, slowSec: 6, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
+    extreme: { label: '激難', points: 8, tempo: 's5', power: 0.9, atk: 1.6, hp: 1.2, weakSec: 4, bigRate: 'max', ko: 'all', curse: 30, slowSec: 3, slowRate: 0.6, slowMode: 'key', spCd: 30, ansTime: 'auto' },
   };
+
   H.levelLabel = id => (H.GAME_LEVELS[id] ? H.GAME_LEVELS[id].label : 'カスタム');
 
   // ---------- 学習内容（問題の難しさ） ----------
@@ -966,7 +971,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     },
     boss_g3c5: {
       name: '相似な図形の主', nick: '翠晶の三角獣', el: '翠晶', img: 'boss_g3c5', bg: 'forest', stars: 2,
-      color: '#6cff3a', glow: '#e2ff9a', deep: '#0a2403', hpMul: 0.95, atkMul: 0.95, speed: 1.05, guard: 'none', float: 1,
+      color: '#6cff3a', glow: '#e2ff9a', deep: '#0a2403', hpMul: 0.95, atkMul: 0.95, speed: 1.02, guard: 'none', float: 1,
       tip: '浮いている。晶石の雨はばらばらに落ちる。翠光線は今いる地点をロックオンしてくる。',
       moves: { claw: '三角刃', multi: '晶石の雨', lock: '翠光線', spikes: '相似の分身', nova: '拡大写像', double: '縮図の双撃', bigWide: '大技・晶石流星群', bigLock: '大技・翠極光線', ko: '一撃必殺・無限相似', ultimate: '奥義・無限相似' },
       pool: ['claw', 'multi', 'lock', 'spikes', 'twin', 'waveL', 'double', 'nova'], big: ['bigWide', 'bigLock', 'bigChain'],
@@ -980,21 +985,21 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
     },
     boss_g2c4: {
       name: '平行と合同の主', nick: '双刃の蒼騎士', el: '蒼雷', img: 'boss_g2c4', bg: 'starhall', stars: 3,
-      color: '#3aa0ff', glow: '#bfe6ff', deep: '#04142e', hpMul: 1.1, atkMul: 1.05, speed: 1.08, guard: 'sides', float: 0, bolt: true,
+      color: '#3aa0ff', glow: '#bfe6ff', deep: '#04142e', hpMul: 1.1, atkMul: 1.05, speed: 1.04, guard: 'sides', float: 0, bolt: true,
       tip: '横は硬い（0.8倍）。正面から斬ると1.25倍。雷槍は今いる地点をロックオン。強い敵：一撃必殺を使う。',
       moves: { twin: '双刃の斬撃', lock: '雷槍', sweep: '蒼雷の薙ぎ払い', pillar: '平行雷柱', nova: '雷鳴天墜', double: '合同の双撃', bigLock: '大技・極雷槍', bigWide: '大技・蒼雷の雨', ko: '一撃必殺・蒼雷の審判', ultimate: '奥義・蒼雷の審判' },
       pool: ['twin', 'lock', 'sweep', 'pillar', 'chase', 'double', 'waveL', 'nova'], big: ['bigLock', 'bigWide', 'bigChain'],
     },
     boss_g2c3: {
       name: '一次関数の主', nick: '交差する雷星', el: '雷星', img: 'boss_g2c3', bg: 'observatory', stars: 4,
-      color: '#ffe23a', glow: '#fff6c0', deep: '#2a2203', hpMul: 1.2, atkMul: 1.1, speed: 1.15, guard: 'none', float: 1, bolt: true,
-      tip: '強い。予告が短く、ロックオンと順番の攻撃が多い。強い敵：一撃必殺を使う。',
+      color: '#ffe23a', glow: '#fff6c0', deep: '#2a2203', hpMul: 1.2, atkMul: 1.1, speed: 1.06, guard: 'none', float: 1, bolt: true,
+      tip: '強い。予告が少し短く、ロックオンと順番の攻撃が多い。強い敵：一撃必殺を使う。',
       moves: { lock: '直線の雷', spikes: '交差斬', multi: '傾きの雨', sweep: '一次の奔流', twin: '切片の双撃', nova: '座標爆砕', double: '変化の割合', waveL: '直線の行進（左から）', waveR: '直線の行進（右から）', bigLock: '大技・y=ax+b', bigWave: '大技・往復する直線', ko: '一撃必殺・交点消滅', ultimate: '奥義・座標崩壊' },
       pool: ['lock', 'spikes', 'multi', 'sweep', 'twin', 'waveL', 'waveR', 'nova'], big: ['bigLock', 'bigWave', 'bigWide', 'bigChain'],
     },
     boss_maou: {
       name: '数学の魔王（中1）', nick: '鬼算の魔王', el: '魔算', img: 'boss_maou', bg: 'starhall', stars: 5,
-      color: '#b04aff', glow: '#7dff8a', deep: '#14042a', hpMul: 1.25, atkMul: 1.05, speed: 1.05, guard: 'none', float: 0, curse: true,
+      color: '#b04aff', glow: '#7dff8a', deep: '#14042a', hpMul: 1.25, atkMul: 1.05, speed: 1.04, guard: 'none', float: 0, curse: true,
       tip: '最後のボス。「鬼算の呪い」を受けると、しばらく問題がすべて「鬼」になる。回避か、安全地帯（緑）へ逃げれば防げる。必殺技を当てると呪いが解ける。',
       moves: { claw: '魔王の爪', multi: '数式の雨', lock: '魔眼の光線', chase: '魔王の追撃・三連', waveL: '数式の行進（左から）', waveR: '数式の行進（右から）', nova: '魔王の咆哮', bigChain: '大技・魔王三連', bigWide: '大技・数式流星群', ko: '一撃必殺・解なし', ultimate: '奥義・無限の鬼算' },
       pool: ['claw', 'multi', 'lock', 'chase', 'waveL', 'waveR', 'double', 'nova'], big: ['bigChain', 'bigWide', 'bigLock', 'curse'],
@@ -3606,7 +3611,7 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       ok('キー（J）で攻撃できる', b.enemy.hp < hp4);
       // 難易度と学習内容は別々
       T.start({ seed: 14, level: 'extreme', study: 'easy', points: 'auto' }); b = app.b;
-      ok('激難：地点8・受けるダメージ1.8倍', b.n === 8 && b.opts.atk === 1.8 && b.opts.power === 0.7);
+      ok('激難：地点8・受けるダメージ1.6倍・前の普通の速さ', b.n === 8 && b.opts.atk === 1.6 && b.opts.power === 0.9 && b.tempo.k === 1 && b.tempo.rest === 2.1);
       ok('学習内容は別に選べる（激難でも簡単な問題）', b.level === 0 && Math.abs(b.cards.left.prob.answer) <= 9);
       T.start({ seed: 15, level: 'beginner', study: 'oni', points: 'auto' }); b = app.b;
       ok('入門でも鬼の問題', b.level === 4 && b.n === 3);
@@ -3615,10 +3620,10 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       a = b.forceAttack('waveL');
       ok('端から順番：地点ごとに当たる時刻がずれる', a.hits.length === 5 && a.hits[4].at > a.hits[0].at + 2);
       b.setMoveTarget(4); T.answer('right'); T.advance(0.4);
-      until(() => a.hits[1].done, 12);
+      until(() => a.hits[1].done, 20);
       b.setMoveTarget(0); T.answer('left'); T.advance(0.4);
       const hpw = b.player.hp;
-      until(() => b.enemy.state !== 'tele', 12);
+      until(() => b.enemy.state !== 'tele', 25);
       ok('当たり終わった地点へ動けばよけられる', b.player.hp === hpw, { hp: b.player.hp, lane: b.player.lane });
       // 広範囲：安全地帯
       until(() => b.enemy.state === 'idle', 8);
@@ -3630,16 +3635,16 @@ Object.assign(H, { ELEMENTARY_TOPICS, ELEMENTARY, elementaryProblem, TOPICS, LEV
       // 一撃必殺
       T.start({ seed: 17, level: 'normal', enemy: 'boss_g2c4' }); b = app.b; T.advance(0.3);
       a = b.forceAttack('ko'); b.debugTarget([b.player.lane]);
-      until(() => b.phase !== 'fight' || b.enemy.state !== 'tele', 14);
+      until(() => b.phase !== 'fight' || b.enemy.state !== 'tele', 30);
       ok('一撃必殺に当たると力尽きる', b.player.dead && b.deathBy === 'ko');
       T.start({ seed: 18, level: 'normal', enemy: 'boss_g2c4' }); b = app.b; T.advance(0.3);
       a = b.forceAttack('ko'); b.debugTarget([b.player.lane]); T.answer('dodge');
-      until(() => b.enemy.state !== 'tele', 14);
+      until(() => b.enemy.state !== 'tele', 30);
       ok('一撃必殺も回避で受け流せる', !b.player.dead && b.stats.dodges === 1);
       // 鬼の呪い
       T.start({ seed: 19, level: 'normal', enemy: 'boss_maou', study: 'easy' }); b = app.b; T.advance(0.3);
       a = b.forceAttack('curse'); b.debugTarget([b.player.lane]);
-      until(() => !!b.curse || b.enemy.state !== 'tele', 12);
+      until(() => !!b.curse || b.enemy.state !== 'tele', 25);
       app.ui.update();
       ok('呪いで問題が鬼になる', !!b.curse && b.cards.atk.prob.oni && doc.querySelector('#cards').classList.contains('cursed') && !doc.querySelector('#curse-pill').classList.contains('hidden'));
       b.player.spCd = 0.01; T.advance(0.2); until(() => b.enabled('special').ok, 4); T.answer('special');
