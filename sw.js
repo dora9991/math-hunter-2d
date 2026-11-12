@@ -1,5 +1,5 @@
 // 自動で作ったファイル（build.mjs）。元は tools/pwa/sw.js
-self.H2D_SW = {"v":"7386975713","shell":["./","manifest.webmanifest","assets/icons/icon-192.png","assets/icons/apple-touch-icon.png"],"media":["assets/bank-tpl.js?v=bb86d81a79","assets/bgm/battle.m4a?v=b8097b129d","assets/bgm/defeat.m4a?v=4e77b43ffe","assets/bgm/menu.m4a?v=833828e114","assets/bgm/victory.m4a?v=601491f203"]};
+self.H2D_SW = {"v":"c1156aa3e8","shell":["./","manifest.webmanifest","assets/icons/icon-192.png","assets/icons/apple-touch-icon.png"],"media":["assets/bank-tpl.js?v=bb86d81a79","assets/bgm/battle.m4a?v=b8097b129d","assets/bgm/defeat.m4a?v=4e77b43ffe","assets/bgm/menu.m4a?v=833828e114","assets/bgm/victory.m4a?v=601491f203"]};
 // オフラインでも遊べるようにする係（配布版だけ）。build.mjs が先頭に「版・画面のファイル・素材の一覧」を入れる
 //   画面（index.html）… つながっていれば毎回あたらしいものを取りにいき（4秒で来なければ保存ずみ）、つながらなければ保存ずみ
 //   素材（問題の型・曲）… 一度使ったら（または設定の「この端末に保存」で）保存して、次からはそれを使う。曲の途中読み（Range）にも答える
